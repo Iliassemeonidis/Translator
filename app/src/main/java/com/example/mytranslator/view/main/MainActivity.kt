@@ -13,15 +13,17 @@ import com.example.mytranslator.model.data.AppState
 import com.example.mytranslator.model.data.DataModel
 import com.example.mytranslator.view.base.BaseActivity
 import com.example.mytranslator.view.main.adapter.MainAdapter
+import dagger.android.AndroidInjection
+import javax.inject.Inject
 
 class MainActivity : BaseActivity<AppState>() {
 
     private lateinit var binding: ActivityMainBinding
     private var adapter: MainAdapter? = null
 
-    override val model: MainViewModel by lazy {
-        ViewModelProvider.NewInstanceFactory().create(MainViewModel::class.java)
-    }
+    @Inject
+    internal lateinit var viewModelFactory: ViewModelProvider.Factory
+    override lateinit var model: MainViewModel
 
     // TODO проговорить эту конструкцию
     private val observer = Observer<AppState> { renderData(it) }
@@ -37,9 +39,14 @@ class MainActivity : BaseActivity<AppState>() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityMainBinding.inflate(layoutInflater)
+        AndroidInjection.inject(this)
         setContentView(binding.root)
 
         initButtonSearchFab()
+
+        model = viewModelFactory.create(MainViewModel::class.java)
+        model.subscribe().observe(this, Observer<AppState> { renderData(it) })
+
     }
 
     private fun initButtonSearchFab() {

@@ -9,7 +9,6 @@ import dagger.Module
 import dagger.Provides
 import javax.inject.Named
 
-
 @Module
 class InteractorModule {
 
@@ -19,4 +18,3 @@ class InteractorModule {
         @Named(NAME_LOCAL) repositoryLocal: Repository<List<DataModel>>
     ) = MainInteractor(repositoryRemote, repositoryLocal)
 }
-

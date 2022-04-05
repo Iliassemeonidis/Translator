@@ -37,5 +37,6 @@ class RepositoryModule {
     @Provides
     @Singleton
     @Named(NAME_LOCAL)
-    internal fun provideDataSourceLocal(): DataSource<List<DataModel>> = RoomDataBaseImplementation()
+    internal fun provideDataSourceLocal(): DataSource<List<DataModel>> =
+        RoomDataBaseImplementation()
 }

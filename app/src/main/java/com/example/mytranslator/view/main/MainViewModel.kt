@@ -7,16 +7,17 @@ import com.example.mytranslator.model.datasource.DataSourceRemote
 import com.example.mytranslator.model.repository.RepositoryImplementation
 import com.example.mytranslator.view.base.BaseViewModel
 import io.reactivex.observers.DisposableObserver
+import javax.inject.Inject
 
-class MainViewModel(
-    private val interactor: MainInteractor = MainInteractor(
-        RepositoryImplementation(
-            DataSourceRemote()
-        ), RepositoryImplementation(DataSourceLocal())
-    )
-) : BaseViewModel<AppState>() {
+class MainViewModel @Inject constructor(private val interactor: MainInteractor) :
+    BaseViewModel<AppState>() {
 
     private var appState: AppState? = null
+
+
+    fun subscribe(): LiveData<AppState> {
+        return liveDataForViewToObserve
+    }
 
     override fun getData(word: String, isOnline: Boolean): LiveData<AppState> {
         compositeDisposable.add(

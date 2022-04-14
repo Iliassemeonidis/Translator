@@ -41,6 +41,6 @@
     </style>
 
     <style name="AppModalStyle" parent="Widget.MaterialComponents.BottomSheet.Modal">
-        <item name="android:background">@drawable/bottom_sheet_dialog_background</item>
+        <item name="android:background">@drawable/bottom_sheet_dialog</item>
     </style>
 </resources>

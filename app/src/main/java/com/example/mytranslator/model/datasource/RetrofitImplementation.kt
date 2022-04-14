@@ -1,8 +1,10 @@
 package com.example.mytranslator.model.datasource
 
 import com.example.mytranslator.model.data.DataModel
+import com.jakewharton.retrofit2.adapter.kotlin.coroutines.CoroutineCallAdapterFactory
 import com.jakewharton.retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory
 import io.reactivex.Observable
+import kotlinx.coroutines.Deferred
 import okhttp3.Interceptor
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
@@ -11,8 +13,9 @@ import retrofit2.converter.gson.GsonConverterFactory
 
 class RetrofitImplementation : DataSource<List<DataModel>> {
 
-    override fun getData(word: String): Observable<List<DataModel>> {
-        return getService(BaseInterceptor.interceptor).search(word)
+    override suspend fun getData(word: String): List<DataModel> {
+        // TODO немного проговорить про await()
+        return getService(BaseInterceptor.interceptor).searchAsync(word).await()
     }
 
     private fun getService(interceptor: Interceptor): ApiService {
@@ -21,11 +24,11 @@ class RetrofitImplementation : DataSource<List<DataModel>> {
 
     private fun createRetrofit(interceptor: Interceptor): Retrofit {
         return Retrofit.Builder()
-        .baseUrl(BASE_URL_LOCATIONS)
-        .addConverterFactory(GsonConverterFactory.create())
-        .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
-        .client(createOkHttpClient(interceptor))
-        .build()
+            .baseUrl(BASE_URL_LOCATIONS)
+            .addConverterFactory(GsonConverterFactory.create())
+            .addCallAdapterFactory(CoroutineCallAdapterFactory())
+            .client(createOkHttpClient(interceptor))
+            .build()
     }
 
     private fun createOkHttpClient(interceptor: Interceptor): OkHttpClient {
@@ -35,6 +38,7 @@ class RetrofitImplementation : DataSource<List<DataModel>> {
         return httpClient.build()
 
     }
+
     companion object {
         private const val BASE_URL_LOCATIONS = "https://dictionary.skyeng.ru/api/public/v1/"
     }

@@ -2,50 +2,40 @@ package com.example.mytranslator.view.main
 
 import androidx.lifecycle.LiveData
 import com.example.mytranslator.model.data.AppState
-import com.example.mytranslator.model.datasource.DataSourceLocal
-import com.example.mytranslator.model.datasource.DataSourceRemote
-import com.example.mytranslator.model.repository.RepositoryImplementation
+import com.example.mytranslator.utils.parseSearchResults
 import com.example.mytranslator.view.base.BaseViewModel
 import io.reactivex.observers.DisposableObserver
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
 class MainViewModel @Inject constructor(private val interactor: MainInteractor) :
     BaseViewModel<AppState>() {
 
-    private var appState: AppState? = null
-
+    private val liveDataForViewToObserver: LiveData<AppState> = _mutableLiveData
 
     fun subscribe(): LiveData<AppState> {
-        return liveDataForViewToObserve
+        return liveDataForViewToObserver
     }
 
-    override fun getData(word: String, isOnline: Boolean): LiveData<AppState> {
-        compositeDisposable.add(
-            interactor.getData(word, isOnline)
-                .subscribeOn(schedulerProviderImpl.io())
-                .observeOn(schedulerProviderImpl.ui())
-                .doOnSubscribe {
-                    liveDataForViewToObserve.value =
-                        AppState.Loading(null)
-                }
-                .subscribeWith(getObserver())
-        )
-        return super.getData(word, isOnline)
+    override fun getData(word: String, isOnline: Boolean) {
+        _mutableLiveData.value = AppState.Loading(null)
+        cancelJob()
+        viewModelCoroutineScope.launch { startInteractor(word, isOnline) }
     }
 
-    private fun getObserver(): DisposableObserver<AppState> {
-        return object : DisposableObserver<AppState>() {
-            override fun onNext(t: AppState) {
-                appState = t
-                liveDataForViewToObserve.value = t
-            }
-
-            override fun onError(e: Throwable) {
-                liveDataForViewToObserve.value = AppState.Error(e)
-            }
-
-            override fun onComplete() {
-            }
+    private suspend fun startInteractor(word: String, isOnline: Boolean) =
+        withContext(Dispatchers.IO) {
+            _mutableLiveData.postValue(parseSearchResults(interactor.getData(word, isOnline)))
         }
+
+    override fun handlerError(error: Throwable) {
+        _mutableLiveData.value = AppState.Error(error)
+    }
+
+    override fun onCleared() {
+        _mutableLiveData.value = AppState.Success(null)
+        super.onCleared()
     }
 }

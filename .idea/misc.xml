@@ -10,7 +10,7 @@
         <entry key="app/src/main/res/drawable/ic_search.xml" value="0.1" />
         <entry key="app/src/main/res/layout/activity_main.xml" value="0.1" />
         <entry key="app/src/main/res/layout/activity_main_recyclerview_item.xml" value="0.25" />
-        <entry key="app/src/main/res/layout/fragment_search_dialog_fragment.xml" value="0.1" />
+        <entry key="app/src/main/res/layout/fragment_search_dialog_fragment.xml" value="0.25003814697265625" />
       </map>
     </option>
   </component>

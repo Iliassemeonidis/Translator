@@ -5,6 +5,7 @@ import com.jakewharton.retrofit2.adapter.kotlin.coroutines.CoroutineCallAdapterF
 import com.jakewharton.retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory
 import io.reactivex.Observable
 import kotlinx.coroutines.Deferred
+import kotlinx.coroutines.flow.Flow
 import okhttp3.Interceptor
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
@@ -13,9 +14,8 @@ import retrofit2.converter.gson.GsonConverterFactory
 
 class RetrofitImplementation : DataSource<List<DataModel>> {
 
-    override suspend fun getData(word: String): List<DataModel> {
-        // TODO немного проговорить про await()
-        return getService(BaseInterceptor.interceptor).searchAsync(word).await()
+    override fun getData(word: String): Flow<List<DataModel>> {
+        return getService(BaseInterceptor.interceptor).searchAsync(word)
     }
 
     private fun getService(interceptor: Interceptor): ApiService {

@@ -17,6 +17,7 @@ class MainInteractor(
     private val localRepository: Repository<List<DataModel>>
 ) : Interactor<AppState> {
 
+    //TODO разобраться тут все ли верно
     override fun getData(word: String, fromRemoteSource: Boolean) = flow<AppState> {
         if (fromRemoteSource) {
             remoteRepository

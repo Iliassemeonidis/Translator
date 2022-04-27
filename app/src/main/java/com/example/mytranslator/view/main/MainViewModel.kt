@@ -26,6 +26,7 @@ class MainViewModel(private val interactor: MainInteractor) :
         }
     }
 
+    //TODO разобраться тут
     private fun startInteractor(word: String, isOnline: Boolean) = flow<AppState> {
         _mutableLiveData.postValue(parseSearchResults(interactor.getData(word, isOnline)))
 

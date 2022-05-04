@@ -10,13 +10,20 @@ import com.example.mytranslator.view.main.MainViewModel
 import org.koin.core.qualifier.named
 import org.koin.dsl.module
 
-// TODO Разобраться что к чему тут вообще происходит и как это работает
-    val application = module {
-        single<Repository<List<DataModel>>>(named(NAME_REMOTE)) { RepositoryImplementation(RetrofitImplementation()) }
-        single<Repository<List<DataModel>>>(named(NAME_LOCAL)) { RepositoryImplementation(RoomDataBaseImplementation()) }
+val application = module {
+    single<Repository<List<DataModel>>>(named(NAME_REMOTE)) {
+        RepositoryImplementation(
+            RetrofitImplementation()
+        )
     }
+    single<Repository<List<DataModel>>>(named(NAME_LOCAL)) {
+        RepositoryImplementation(
+            RoomDataBaseImplementation()
+        )
+    }
+}
 
-    val mainScreen = module {
-        factory { MainInteractor(get(named(NAME_REMOTE)), get(named(NAME_LOCAL))) }
-        factory { MainViewModel(get()) }
-    }
+val mainScreen = module {
+    factory { MainInteractor(get(named(NAME_REMOTE)), get(named(NAME_LOCAL))) }
+    factory { MainViewModel(get()) }
+}

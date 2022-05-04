@@ -22,6 +22,7 @@ class MainActivity : BaseActivity<AppState>() {
     override lateinit var model: MainViewModel
 
     private val adapter: MainAdapter by lazy { MainAdapter(onListItemClickListener) }
+
     private val fabClickListener: View.OnClickListener =
         View.OnClickListener {
             val searchDialogFragment =

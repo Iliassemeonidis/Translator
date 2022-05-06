@@ -1,44 +1,34 @@
 package com.example.mytranslator.view.main
 
-import androidx.lifecycle.LiveData
+import androidx.lifecycle.viewModelScope
 import com.example.mytranslator.model.data.AppState
 import com.example.mytranslator.utils.parseSearchResults
 import com.example.mytranslator.view.base.BaseViewModel
-import kotlinx.coroutines.*
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.catch
-import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.launch
 
 class MainViewModel(private val interactor: MainInteractor) :
     BaseViewModel<AppState>() {
 
-    private val liveDataForViewToObserver: LiveData<AppState> = _mutableLiveData
+    private val _stateFlow: MutableStateFlow<AppState> =
+        MutableStateFlow(AppState.Instal)
 
-    fun subscribe(): LiveData<AppState> {
-        return liveDataForViewToObserver
-    }
+    val state: Flow<AppState> get() = _stateFlow
 
     override fun getData(word: String, isOnline: Boolean) {
-        _mutableLiveData.value = AppState.Loading(null)
-        cancelJob()
-        viewModelCoroutineScope.launch{
-            startInteractor(word, isOnline)
-                .catch { e -> handlerError(e) }
+        _stateFlow.value = AppState.Loading(null)
+        viewModelScope.launch {
+            interactor.getData(word, isOnline)
+                .catch { _stateFlow.value = AppState.Error(it) }
+                .collect { _stateFlow.value = parseSearchResults(AppState.Success(it)) }
         }
     }
 
-    //TODO разобраться тут
-    private fun startInteractor(word: String, isOnline: Boolean) = flow<AppState> {
-        _mutableLiveData.postValue(parseSearchResults(interactor.getData(word, isOnline)))
-
-    }
-
-
-    override fun handlerError(error: Throwable) {
-        _mutableLiveData.value = AppState.Error(error)
-    }
-
     override fun onCleared() {
-        _mutableLiveData.value = AppState.Success(null)
+        _stateFlow.value = AppState.Success(listOf())
         super.onCleared()
     }
 }

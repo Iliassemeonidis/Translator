@@ -3,10 +3,8 @@ package com.example.mytranslator.utils
 import com.example.mytranslator.model.data.AppState
 import com.example.mytranslator.model.data.DataModel
 import com.example.mytranslator.model.data.Meanings
-import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.flow
 
-fun parseSearchResults(data: AppState): Flow<AppState>  = flow {
+fun parseSearchResults(data: AppState): AppState  {
     val newSearchResults = arrayListOf<DataModel>()
     when (data) {
         is AppState.Success -> {
@@ -18,7 +16,7 @@ fun parseSearchResults(data: AppState): Flow<AppState>  = flow {
             }
         }
     }
-    AppState.Success(newSearchResults)
+  return  AppState.Success(newSearchResults)
 }
 
 private fun parseResult(dataModel: DataModel, newDataModels: ArrayList<DataModel>) {

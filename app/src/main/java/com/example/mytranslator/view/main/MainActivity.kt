@@ -15,6 +15,7 @@ import com.example.mytranslator.view.base.BaseActivity
 import com.example.mytranslator.view.main.adapter.MainAdapter
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
@@ -98,6 +99,7 @@ class MainActivity : BaseActivity<AppState>() {
                     dataModel.error.message
                 )
             }
+            is AppState.Instal -> {}
         }
     }
 
@@ -107,10 +109,9 @@ class MainActivity : BaseActivity<AppState>() {
         }
         val viewModel: MainViewModel by viewModel()
         model = viewModel
-        CoroutineScope(Dispatchers.Default).launch {
-
+        CoroutineScope(Dispatchers.Main).launch {
+            model.state.collect { renderData(it) }
         }
-        model.subscribe().observe(this@MainActivity) { renderData(it) }
     }
 
     private fun initViews() {

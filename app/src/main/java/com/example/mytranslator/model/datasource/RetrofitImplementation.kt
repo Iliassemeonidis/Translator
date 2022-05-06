@@ -11,6 +11,7 @@ import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
+import tech.thdev.network.flowcalladapterfactory.FlowCallAdapterFactory
 
 class RetrofitImplementation : DataSource<List<DataModel>> {
 
@@ -27,6 +28,7 @@ class RetrofitImplementation : DataSource<List<DataModel>> {
             .baseUrl(BASE_URL_LOCATIONS)
             .addConverterFactory(GsonConverterFactory.create())
             .addCallAdapterFactory(CoroutineCallAdapterFactory())
+            .addCallAdapterFactory(FlowCallAdapterFactory())
             .client(createOkHttpClient(interceptor))
             .build()
     }

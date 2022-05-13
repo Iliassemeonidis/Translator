@@ -1,10 +1,9 @@
 package com.example.mytranslator.model.datasource
 
+import com.example.mytranslator.model.data.api.BaseInterceptor
 import com.example.mytranslator.model.data.DataModel
+import com.example.mytranslator.model.data.api.ApiService
 import com.jakewharton.retrofit2.adapter.kotlin.coroutines.CoroutineCallAdapterFactory
-import com.jakewharton.retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory
-import io.reactivex.Observable
-import kotlinx.coroutines.Deferred
 import kotlinx.coroutines.flow.Flow
 import okhttp3.Interceptor
 import okhttp3.OkHttpClient
@@ -15,7 +14,7 @@ import tech.thdev.network.flowcalladapterfactory.FlowCallAdapterFactory
 
 class RetrofitImplementation : DataSource<List<DataModel>> {
 
-    override fun getData(word: String): Flow<List<DataModel>> {
+    override suspend fun getData(word: String): List<DataModel> {
         return getService(BaseInterceptor.interceptor).searchAsync(word)
     }
 

@@ -1,4 +1,4 @@
-package com.example.mytranslator.model.datasource
+package com.example.mytranslator.model.data.api
 
 import okhttp3.Interceptor
 import okhttp3.Response

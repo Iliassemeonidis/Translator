@@ -5,16 +5,14 @@ import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
+import com.example.core.core.BaseActivity
+import com.example.historyscreen.convertMeaningsToString
+import com.example.historyscreen.history.HistoryActivity
+import com.example.model.AppState
 import com.example.mytranslator.R
 import com.example.mytranslator.databinding.ActivityMainBinding
-import com.example.mytranslator.model.data.AppState
-import com.example.mytranslator.model.data.DataModel
-import com.example.mytranslator.utils.convertMeaningsToString
-import com.example.mytranslator.utils.network.isOnline
-import com.example.mytranslator.view.base.BaseActivity
-import com.example.mytranslator.view.history.HistoryActivity
-import com.example.mytranslator.view.main.adapter.MainAdapter
 import com.example.mytranslator.view.descriptionscreen.DescriptionActivity
+import com.example.utils.network.isOnline
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
 
@@ -33,13 +31,13 @@ class MainActivity : BaseActivity<AppState, MainInteractor>() {
         }
     private val onListItemClickListener: MainAdapter.OnListItemClickListener =
         object : MainAdapter.OnListItemClickListener {
-            override fun onItemClick(data: DataModel) {
+            override fun onItemClick(data: com.example.model.DataModel) {
                 startActivity(
                     DescriptionActivity.getIntent(
                         this@MainActivity,
                         data.text!!,
                         convertMeaningsToString(data.meanings!!),
-                        data.meanings[0].imageUrl
+                        data.meanings!![0].imageUrl
                     )
                 )
             }
@@ -65,7 +63,7 @@ class MainActivity : BaseActivity<AppState, MainInteractor>() {
         initViews()
     }
 
-    override fun setDataToAdapter(data: List<DataModel>) {
+    override fun setDataToAdapter(data: List<com.example.model.DataModel>) {
         adapter.setData(data)
     }
 

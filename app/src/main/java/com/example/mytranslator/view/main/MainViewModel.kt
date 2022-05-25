@@ -1,15 +1,10 @@
 package com.example.mytranslator.view.main
 
 import androidx.lifecycle.LiveData
-import androidx.lifecycle.viewModelScope
-import com.example.mytranslator.model.data.AppState
-import com.example.mytranslator.utils.parseOnlineSearchResults
-import com.example.mytranslator.view.base.BaseViewModel
+import com.example.core.core.viewmodel.BaseViewModel
+import com.example.historyscreen.parseOnlineSearchResults
+import com.example.model.AppState
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.catch
-import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
@@ -23,7 +18,7 @@ class MainViewModel(private val interactor: MainInteractor) :
 
     override fun getData(word: String, isOnline: Boolean) {
         _mutableLiveData.value = AppState.Loading(null)
-        cancelJob()
+//        cancelJob()
         viewModelCoroutineScope.launch { startInteractor(word, isOnline) }
     }
 

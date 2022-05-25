@@ -10,8 +10,8 @@ import coil.ImageLoader
 import coil.request.LoadRequest
 import com.example.mytranslator.R
 import com.example.mytranslator.databinding.ActivityDescriptionBinding
-import com.example.mytranslator.utils.network.isOnline
-import com.example.mytranslator.utils.ui.AlertDialogFragment
+import com.example.utils.network.isOnline
+import com.example.utils.ui.AlertDialogFragment
 
 class DescriptionActivity : AppCompatActivity() {
 

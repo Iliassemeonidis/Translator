@@ -14,3 +14,8 @@ dependencyResolutionManagement {
 }
 rootProject.name = "My Translator"
 include ':app'
+include ':core'
+include ':model'
+include ':utils'
+include ':historyScreen'
+include ':repository'

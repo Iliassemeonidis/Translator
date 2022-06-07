@@ -13,6 +13,7 @@ import org.koin.dsl.module
 val application = module {
     single { Room.databaseBuilder(get(), HistoryDataBase::class.java, "HistoryDB").build() }
     single { get<HistoryDataBase>().historyDao() }
+
     single<Repository<List<DataModel>>> {
     RepositoryImplementation(
             RetrofitImplementation()

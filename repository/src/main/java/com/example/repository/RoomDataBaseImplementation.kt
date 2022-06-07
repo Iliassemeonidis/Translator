@@ -1,5 +1,6 @@
 package com.example.repository
 
+import com.example.model.AppState
 import com.example.model.DataModel
 import com.example.repository.room.dao.HistoryDao
 
@@ -10,7 +11,7 @@ class RoomDataBaseImplementation(private val historyDao: HistoryDao) :
         return mapHistoryEntityToSearchResult(historyDao.all())
     }
 
-    override suspend fun saveToDB(appState: com.example.model.AppState) {
+    override suspend fun saveToDB(appState: AppState) {
         convertDataModelSuccessToEntity(appState)?.let {
             historyDao.insert(it)
         }

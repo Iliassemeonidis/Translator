@@ -9,6 +9,7 @@ import com.example.core.core.BaseActivity
 import com.example.historyscreen.convertMeaningsToString
 import com.example.historyscreen.history.HistoryActivity
 import com.example.model.AppState
+import com.example.model.DataModel
 import com.example.mytranslator.R
 import com.example.mytranslator.databinding.ActivityMainBinding
 import com.example.mytranslator.view.descriptionscreen.DescriptionActivity
@@ -31,7 +32,7 @@ class MainActivity : BaseActivity<AppState, MainInteractor>() {
         }
     private val onListItemClickListener: MainAdapter.OnListItemClickListener =
         object : MainAdapter.OnListItemClickListener {
-            override fun onItemClick(data: com.example.model.DataModel) {
+            override fun onItemClick(data: DataModel) {
                 startActivity(
                     DescriptionActivity.getIntent(
                         this@MainActivity,
@@ -63,7 +64,7 @@ class MainActivity : BaseActivity<AppState, MainInteractor>() {
         initViews()
     }
 
-    override fun setDataToAdapter(data: List<com.example.model.DataModel>) {
+    override fun setDataToAdapter(data: List<DataModel>) {
         adapter.setData(data)
     }
 

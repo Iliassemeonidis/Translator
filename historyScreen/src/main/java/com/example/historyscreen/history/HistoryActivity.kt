@@ -4,6 +4,7 @@ import android.os.Bundle
 import com.example.core.core.BaseActivity
 import com.example.historyscreen.databinding.ActivityHistoryBinding
 import com.example.model.AppState
+import com.example.model.DataModel
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class HistoryActivity : BaseActivity<AppState, HistoryInteractor>() {
@@ -26,7 +27,7 @@ class HistoryActivity : BaseActivity<AppState, HistoryInteractor>() {
         model.getData("", false)
     }
 
-    override fun setDataToAdapter(data: List<com.example.model.DataModel>) {
+    override fun setDataToAdapter(data: List<DataModel>) {
         adapter.setData(data)
     }
 

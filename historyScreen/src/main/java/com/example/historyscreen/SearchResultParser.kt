@@ -2,7 +2,7 @@ package com.example.historyscreen
 
 import com.example.model.AppState
 import com.example.model.DataModel
-import com.example.repository.room.entity.HistoryEntity
+import com.example.model.Meanings
 
 fun parseOnlineSearchResults(appState: AppState): AppState {
     return AppState.Success(mapResult(appState, true))
@@ -49,10 +49,10 @@ private fun parseOnlineResult(
     newDataModels: ArrayList<DataModel>
 ) {
     if (!dataModel.text.isNullOrBlank() && !dataModel.meanings.isNullOrEmpty()) {
-        val newMeanings = arrayListOf<com.example.model.Meanings>()
+        val newMeanings = arrayListOf<Meanings>()
         for (meaning in dataModel.meanings!!) {
             if (meaning.translation != null && !meaning.translation!!.translation.isNullOrBlank()) {
-                newMeanings.add(com.example.model.Meanings(meaning.translation, meaning.imageUrl))
+                newMeanings.add(Meanings(meaning.translation, meaning.imageUrl))
             }
         }
         if (newMeanings.isNotEmpty()) {
@@ -61,7 +61,7 @@ private fun parseOnlineResult(
     }
 }
 
-fun convertMeaningsToString(meanings: List<com.example.model.Meanings>): String {
+fun convertMeaningsToString(meanings: List<Meanings>): String {
     var meaningsSeparatedByComma = String()
     for ((index, meaning) in meanings.withIndex()) {
         meaningsSeparatedByComma += if (index + 1 != meanings.size) {

@@ -5,6 +5,7 @@ import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
+import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.core.core.BaseActivity
 import com.example.historyscreen.convertMeaningsToString
 import com.example.historyscreen.history.HistoryActivity
@@ -94,6 +95,8 @@ class MainActivity : BaseActivity<AppState, MainInteractor>() {
 
     private fun initViews() {
         binding.searchFab.setOnClickListener(fabClickListener)
+        binding.mainActivityRecyclerview.layoutManager = LinearLayoutManager(applicationContext)
         binding.mainActivityRecyclerview.adapter = adapter
     }
+
 }

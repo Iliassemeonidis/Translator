@@ -24,6 +24,7 @@
         </activity>
 
         <activity android:name="com.example.historyscreen.history.HistoryActivity" />
+        <activity android:name="com.example.mytranslator.view.descriptionscreen.DescriptionActivity" />
     </application>
 
 </manifest>

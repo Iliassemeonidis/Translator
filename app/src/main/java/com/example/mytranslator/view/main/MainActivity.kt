@@ -1,11 +1,19 @@
 package com.example.mytranslator.view.main
 
+import android.animation.ObjectAnimator
 import android.content.Intent
+import android.os.Build
 import android.os.Bundle
+import android.os.CountDownTimer
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
+import android.view.ViewTreeObserver
+import android.view.animation.AnticipateInterpolator
+import androidx.annotation.RequiresApi
+import androidx.core.animation.doOnEnd
 import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.example.core.core.BaseActivity
 import com.example.historyscreen.convertMeaningsToString
 import com.example.historyscreen.history.HistoryActivity
@@ -15,16 +23,24 @@ import com.example.mytranslator.R
 import com.example.mytranslator.databinding.ActivityMainBinding
 import com.example.mytranslator.view.descriptionscreen.DescriptionActivity
 import com.example.utils.network.isOnline
+import com.example.utils.ui.viewById
+import com.google.android.material.floatingactionbutton.FloatingActionButton
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
 
 private const val BOTTOM_SHEET_FRAGMENT_DIALOG_TAG = "74a54328-5d62-46bf-ab6b-cbf5fgt0-092395"
+private const val SLIDE_LEFT_DURATION = 1000L
+private const val COUNTDOWN_DURATION = 2000L
+private const val COUNTDOWN_INTERVAL = 1000L
 
 class MainActivity : BaseActivity<AppState, MainInteractor>() {
 
     private lateinit var binding: ActivityMainBinding
     override lateinit var model: MainViewModel
     private val adapter: MainAdapter by lazy { MainAdapter(onListItemClickListener) }
+    private val mainActivityRecyclerview by viewById<RecyclerView>(R.id.main_activity_recyclerview)
+    private val searchFab by viewById<FloatingActionButton>(R.id.search_fab)
+
     private val fabClickListener: View.OnClickListener =
         View.OnClickListener {
             val searchDialogFragment = SearchDialogFragment.newInstance()
@@ -44,10 +60,10 @@ class MainActivity : BaseActivity<AppState, MainInteractor>() {
                 )
             }
         }
+
     private val onSearchClickListener: SearchDialogFragment.OnSearchClickListener =
         object : SearchDialogFragment.OnSearchClickListener {
             override fun onClick(searchWord: String) {
-                isNetworkAvailable = isOnline(applicationContext)
                 if (isNetworkAvailable) {
                     model.getData(searchWord, isNetworkAvailable)
                 } else {
@@ -61,8 +77,61 @@ class MainActivity : BaseActivity<AppState, MainInteractor>() {
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
+        setDefaultSplashScreen()
         iniViewModel()
         initViews()
+    }
+
+    // тут проверка версии сдк
+    private fun setDefaultSplashScreen() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+            setSplashScreenHideAnimation()
+        }
+        setSplashScreenDuration()
+    }
+
+    // тут магия , анимация
+    @RequiresApi(31)
+    private fun setSplashScreenHideAnimation() {
+        splashScreen.setOnExitAnimationListener { splashScreenView ->
+            val slideLeft = ObjectAnimator.ofFloat(
+                splashScreenView,
+                View.TRANSLATION_X,
+                0f,
+                -splashScreenView.height.toFloat()
+            )
+            slideLeft.interpolator = AnticipateInterpolator()
+            slideLeft.duration = SLIDE_LEFT_DURATION
+
+            slideLeft.doOnEnd { splashScreenView.remove() }
+            slideLeft.start()
+        }
+    }
+
+    // тут у нас время отображения
+    private fun setSplashScreenDuration() {
+        var isHideSplashScreen = false
+
+        object : CountDownTimer(COUNTDOWN_DURATION, COUNTDOWN_INTERVAL) {
+            override fun onTick(millisUntilFinished: Long) {}
+            override fun onFinish() {
+                isHideSplashScreen = true
+            }
+        }.start()
+
+        val content: View = findViewById(android.R.id.content)
+        content.viewTreeObserver.addOnPreDrawListener(
+            object : ViewTreeObserver.OnPreDrawListener {
+                override fun onPreDraw(): Boolean {
+                    return if (isHideSplashScreen) {
+                        content.viewTreeObserver.removeOnPreDrawListener(this)
+                        true
+                    } else {
+                        false
+                    }
+                }
+            }
+        )
     }
 
     override fun setDataToAdapter(data: List<DataModel>) {
@@ -85,18 +154,21 @@ class MainActivity : BaseActivity<AppState, MainInteractor>() {
     }
 
     private fun iniViewModel() {
-        if (binding.mainActivityRecyclerview.adapter != null) {
+        if (mainActivityRecyclerview.adapter != null) {
             throw IllegalStateException("The ViewModel should be initialised first")
         }
         val viewModel: MainViewModel by viewModel()
+
+        // TODO разобраться в инициализации, так не работает
+//        val viewModel: MainViewModel by currentScope.inject()
         model = viewModel
         model.subscribe().observe(this@MainActivity) { renderData(it) }
     }
 
     private fun initViews() {
-        binding.searchFab.setOnClickListener(fabClickListener)
-        binding.mainActivityRecyclerview.layoutManager = LinearLayoutManager(applicationContext)
-        binding.mainActivityRecyclerview.adapter = adapter
+        searchFab.setOnClickListener(fabClickListener)
+        mainActivityRecyclerview.layoutManager = LinearLayoutManager(applicationContext)
+        mainActivityRecyclerview.adapter = adapter
     }
 
 }

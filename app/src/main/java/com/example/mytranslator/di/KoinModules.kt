@@ -15,12 +15,12 @@ val application = module {
     single { get<HistoryDataBase>().historyDao() }
 
     single<Repository<List<DataModel>>> {
-    RepositoryImplementation(
+        RepositoryImplementation(
             RetrofitImplementation()
         )
     }
     single<RepositoryLocal<List<DataModel>>> {
-       RepositoryImplementationLocal(
+        RepositoryImplementationLocal(
             RoomDataBaseImplementation(get())
         )
     }
@@ -35,3 +35,12 @@ val historyScreen = module {
     factory { HistoryViewModel(get()) }
     factory { HistoryInteractor(get(), get()) }
 }
+
+// TODO разобраться
+/*
+val mainScreen = module {
+    scope(named<MainActivity>()) {
+        scoped { MainInteractor(get(), get()) }
+        viewModel { MainViewModel(get()) }
+    }
+}*/
